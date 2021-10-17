@@ -32,7 +32,7 @@ err := retry.Run(
     })
 ```
 
-## Simpler example
+## Example *without* `context.Context`
 
 If you don't use `context.Context` or just want something simpler, you can omit the context part entirely:
 
