@@ -14,10 +14,11 @@ import (
 
 func main() {
 
-	// Give the operation 10 seconds to complete. We also cancel the context is the application is killed
+	// Give the operation a few seconds to complete. We also cancel the context is the application
+	// receives an interrupt signal (Ctrl+C)
 	ctx := context.Background()
 	ctx, cancel := context.WithTimeout(ctx, 25*time.Second)
-	ctx, _ = signal.NotifyContext(ctx, os.Interrupt, os.Kill)
+	ctx, _ = signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
 
 	// Fetch the url, with automatic retry
@@ -45,21 +46,23 @@ func main() {
 
 }
 
+// FetchUrl sends a HTTP GET request to a given URL and returns the response body
 func FetchUrl(ctx context.Context, url string) (io.ReadCloser, error) {
 
 	// Send the request to the url
 	res, err := http.Get(url)
 	if err != nil {
-		return nil, retry.RetryErr(err) // socket errors can always be retried
+		// Socket / connection errors can always be retried
+		return nil, retry.RetryErr(err)
 	}
 
-	// 500 errors can always be retried
+	// 500 errors can always be retried, since they indicate some server-side issue
 	if res.StatusCode >= 500 && res.StatusCode < 600 {
 		res.Body.Close()
 		return nil, retry.RetryErr(fmt.Errorf("http status code: %d", res.StatusCode))
 	}
 
-	// If the error is in the 200 range
+	// If the status code is in the 200 range, the request was successful
 	if res.StatusCode >= 200 && res.StatusCode < 300 {
 		if err != nil {
 			return nil, err
