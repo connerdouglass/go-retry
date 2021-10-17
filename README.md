@@ -1,5 +1,7 @@
 # go-retry
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/connerdouglass/go-retry.svg)](https://pkg.go.dev/github.com/connerdouglass/go-retry)
+
 Go library that makes it easy to add automatic retries to your projects, including support for `context.Context`.
 
 ## Example with `context.Context`
