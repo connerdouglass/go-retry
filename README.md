@@ -74,7 +74,7 @@ You can easily add randomized offsets to your Delays with the following function
 retry.Rand(retry.Exponential(time.Second))
 ```
 
-This creates a new wrapper Delay that includes the exponential delay, but adds a random offset at the end.
+This creates a new wrapper Delay that includes the exponential delay, but adds a random offset at the end. By default, the random offset changes the input delay value by up to 10%.
 
 ### Adding logging to delays and retries
 
@@ -91,7 +91,7 @@ retry.Log(retry.Rand(retry.Exponential(time.Second)))
 Hopefully you can see that it's very easy to compose clever behaviors with this simple, functional pattern. You can also create your own functions if you choose. Here's the source code for the `Linear` delay function, for an example of how simple it is:
 
 ```go
-func Linear(base time.Duration) Delay {
+func Linear(base time.Duration) retry.Delay {
 	return func(iteration int) time.Duration {
 		return base * time.Duration(iteration)
 	}
