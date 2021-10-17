@@ -34,30 +34,7 @@ err := retry.Run(
 
 ## Example *without* `context.Context`
 
-If you don't use `context.Context` or just want something simpler, you can omit the context part entirely:
-
-```go
-// Perform some action that might fail, with auto retries
-err := retry.Run(
-    nil,
-    retry.Limit(5), // <-- Limit retries
-    retry.Exponential(time.Second), // <-- Exponential backoff
-    func(ctx context.Context) error {
-
-        // Do something here:
-        err := doSomethingDangerous()
-
-        // If it succeeds:
-        return nil
-
-        // If it fails, but is retryable:
-        return retry.RetryErr(err)
-
-        // If it fails, and it's not retryable:
-        return err
-
-    })
-```
+If you don't use `context.Context` or just want something simpler, you can omit the context part entirely. In the place of `ctx`, pass either `nil` or `context.Background()`.
 
 ## Functional pattern for Delays
 
